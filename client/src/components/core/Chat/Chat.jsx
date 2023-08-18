@@ -6,10 +6,38 @@ import ChatHeader from "./ChatHeader";
 import { usePathname } from "next/navigation";
 import Loading from "@/components/common/Loading/Loading";
 
+import { io } from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
+import { useAuthUser } from "@/context/Auth/AuthProvider";
+
 export default function Chat() {
   const to = usePathname()?.split("chat/")[1];
-  const { isLoading, isError, data } = useMessages(to);
-  console.log({ data });
+  const { isLoading, isError, isSuccess, data } = useMessages(to);
+  const me = useAuthUser();
+
+  const [messages, setMessages] = useState([]);
+
+  const socket = useRef();
+
+  useEffect(() => {
+    console.log("effect - me");
+    if (me) {
+      socket.current = io("http://localhost:5000");
+      socket.current.emit("add-user", me?._id);
+
+      socket.current.on("receive-message", (msg) => {
+        console.log({ arrivdedMsg: msg });
+        setMessages((prev) => [...prev, msg]);
+      });
+    }
+  }, [me]);
+
+  useEffect(() => {
+    if (isSuccess && !!data) {
+      setMessages(data?.data);
+    }
+  }, [isSuccess]);
+
   if (isLoading) return <Loading />;
   if (isError) return <h3>Error {":)"}</h3>;
 
@@ -23,8 +51,8 @@ export default function Chat() {
       className="h-100 border rounded"
     >
       <ChatHeader />
-      <ChatBody messages={data?.data} />
-      <ChatForm />
+      <ChatBody socket={socket?.current} messages={messages} />
+      <ChatForm socket={socket?.current} setMessages={setMessages} />
     </div>
   );
 }

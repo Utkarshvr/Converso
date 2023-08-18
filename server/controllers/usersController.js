@@ -7,8 +7,11 @@ const bcrypt = require("bcrypt");
 // @route GET / users
 // @access Private
 const getUsers = asyncHandler(async (req, res) => {
-  // Get all users from MongoDB
-  const users = await User.find().select("-password").lean();
+  // Get all users except me from MongoDB
+  const users = await User.find({ _id: { $ne: req.user._id } })
+    .select("-password")
+    .lean();
+
   //   the .lean() method is invoked on the query object to indicate that the query should return plain JavaScript objects rather than Mongoose documents. By calling .lean(), Mongoose bypasses the object mapping and schema processing overhead, resulting in improved query performance. This can be useful when you only need the raw data and don't require Mongoose-specific functionality.
   if (!users?.length) {
     return res.status(404).json({ message: "Users not found" });

@@ -8,7 +8,7 @@ async function verifyAccessToken(req, res, next) {
       return res.status(401).json({ message: "Not Authorized" });
 
     const access_token = auth_header.split(" ")[1];
-    console.log({ auth_header, access_token });
+    // console.log({ auth_header, access_token });
     jwt.verify(access_token, process.env.SECRET_KEY, (err, user) => {
       if (err)
         return res
@@ -27,7 +27,7 @@ async function verifyAccessToken(req, res, next) {
 async function verifyRefreshToken(req, res, next) {
   try {
     const refresh_token = req.cookies?.refresh_token;
-    console.log({ refresh_token });
+    // console.log({ refresh_token });
 
     if (!refresh_token)
       return res.status(401).json({ message: "Token expired! Login Again" });

@@ -1,5 +1,5 @@
 "use client";
-import { useAuthIsAuth } from "@/context/Auth/AuthProvider";
+import { useAuthIsAuth, useAuthUser } from "@/context/Auth/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "../auth/LogoutButton";
@@ -8,6 +8,7 @@ import Image from "next/image";
 export default function Header() {
   const pathname = usePathname();
   const isAuth = useAuthIsAuth();
+  const user = useAuthUser();
   return (
     <div
       style={{
@@ -40,12 +41,7 @@ export default function Header() {
           gap: "1em",
         }}
       >
-        <Link
-          href="/chat"
-          style={{ fontWeight: pathname === "/chat" ? "bold" : null }}
-        >
-          Chat
-        </Link>
+        <h6>{user?.username}</h6>
         {isAuth ? (
           <LogoutButton />
         ) : (

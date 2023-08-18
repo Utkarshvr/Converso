@@ -1,3 +1,6 @@
+// Date-fns
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+
 const msgStyle = {
   width: "fit-content",
   maxWidth: "45%",
@@ -20,9 +23,33 @@ export default function ChatMsg({ me, message }) {
     >
       <div
         className={`${isMyMsg ? "bg-primary-subtle" : "bg-secondary-subtle"}`}
-        style={msgStyle}
+        style={{
+          ...msgStyle,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: isMyMsg ? "flex-end" : "flex-start",
+        }}
       >
-        {message.message}
+        <p
+          style={{
+            marginBottom: "0.2em",
+          }}
+        >
+          {message.message}
+        </p>
+        <div
+          style={{
+            fontWeight: "bold",
+            color: "#d0d0d0",
+            fontSize: "10px",
+            marginLeft: isMyMsg ? "auto" : 0,
+            marginRight: !isMyMsg ? "auto" : 0,
+          }}
+        >
+          {formatDistanceToNow(new Date(message?.createdAt), {
+            addSuffix: true,
+          })}
+        </div>
       </div>
     </div>
   );

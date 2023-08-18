@@ -9,12 +9,6 @@ import { useMutation, useQuery } from "react-query";
 
 import { toast } from "react-toastify";
 
-export function useUserById(userId) {
-  return useQuery(["user", userId], (param_token) =>
-    fetchUserById(userId, param_token)
-  );
-}
-
 export function useLogin() {
   return useMutation("login-user", loginUser, {
     onSuccess: () => {

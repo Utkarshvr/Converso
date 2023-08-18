@@ -1,15 +1,16 @@
 "use client";
 
-import { useAuthToken } from "@/context/Auth/AuthProvider";
+import { useAuthToken, useAuthUser } from "@/context/Auth/AuthProvider";
 import { useSendMessage } from "@/hooks/rtq/message.rtq";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function ChatForm() {
+export default function ChatForm({ socket, setMessages }) {
   const [msg, setMsg] = useState("");
 
   const to = usePathname().split("chat/")[1];
   const token = useAuthToken();
+  const me = useAuthUser();
 
   const { mutate: sendMsg, isLoading, isSuccess } = useSendMessage();
 
@@ -19,6 +20,16 @@ export default function ChatForm() {
 
   const onSubmit = () => {
     sendMsg({ to, msg, token });
+    setMessages((prev) => [
+      ...prev,
+      { receiver: to, message: msg, sender: me._id, createdAt: new Date() },
+    ]);
+    socket.emit("send-message", {
+      receiver: to,
+      message: msg,
+      sender: me._id,
+      createdAt: new Date(),
+    });
   };
   return (
     <div className="border-top p-2">

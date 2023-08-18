@@ -10,17 +10,17 @@ export default function Layout({ children }) {
           display: "flex",
           // alignItems: "center",
           // justifyContent: "center",
-          gap: "2em",
+          gap: "0.5em",
           // background: "#121212",
           padding: "1em",
           height: "90vh",
         }}
       >
-        <div style={{ width: "20%", minWidth: "200px" }}>
+        <div style={{ width: "20%", minWidth: "120px" }}>
           <Contacts />
         </div>
 
-        <div style={{ width: "75%", minWidth: "520px" }}>
+        <div style={{ width: "75%", minWidth: "300px" }}>
           {children}
           {/* <Chat /> */}
         </div>
